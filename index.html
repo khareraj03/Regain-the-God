@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regain The God</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+    }
+
+    .main-content {
+      padding: 20px;
+    }
+
+    .container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .section {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      flex: 1 1 48%;
+      max-width: 48%;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      font-size: 1.5em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      padding-bottom: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+    }
+
+    .input-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 300px;
+      margin: auto;
+    }
+
+    input[type="text"], input[type="date"], input[type="file"], select {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin: 5px 0;
+      width: 100%;
+      font-size: 1em;
+      background: #2c5364;
+      color: #fff;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      filter: invert(1);
+    }
+
+    input[type="date"]:read-only {
+      background: #2c5364;
+      cursor: pointer;
+    }
+
+    button {
+      background-color: #29b6f6;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin: 5px;
+      font-size: 1em;
+    }
+
+    button:hover {
+      background-color: #0288d1;
+    }
+
+    .affirmation {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 1.2em;
+      text-align: center;
+      margin: 20px auto;
+      max-width: 700px;
+    }
+
+    .goal-container {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      background-color: rgba(255,255,255,0.05);
+    }
+
+    .progress-bar {
+      background: #555;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress-bar-inner {
+      height: 20px;
+      width: 0%;
+      background: #29b6f6;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="affirmation" id="affirmationBox">
+    🌞 "Every small step is a victory. You are getting stronger."
+  </div>
+
+  <div class="main-content">
+  <div class="container">
+    <div class="section">
+      <h2>Daily Habits Tracker</h2>
+      <div class="input-wrapper">
+        <select id="timeSlot">
+          <option value="Morning">Morning</option>
+          <option value="Afternoon">Afternoon</option>
+          <option value="Evening">Evening</option>
+          <option value="Night">Night</option>
+        </select>
+        <input type="text" id="habitName" placeholder="Add habit (e.g., Read 5 mins)" />
+        <input type="date" id="date" readonly />
+        <select id="mood">
+          <option value="😊 Happy">😊 Happy</option>
+          <option value="😐 Neutral">😐 Neutral</option>
+          <option value="😞 Sad">😞 Sad</option>
+          <option value="😠 Angry">😠 Angry</option>
+          <option value="😰 Anxious">😰 Anxious</option>
+          <option value="😴 Tired">😴 Tired</option>
+          <option value="😎 Confident">😎 Confident</option>
+          <option value="🥳 Excited">🥳 Excited</option>
+        </select>
+        <button onclick="addHabit()">Add Habit</button>
+      </div>
+      <table id="dailyTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Habit</th>
+            <th>Done</th>
+            <th>Mood</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Big Goal Tracker</h2>
+      <div class="input-wrapper">
+        <input type="text" id="goalInput" placeholder="Your big goal..." />
+        <button onclick="addGoal()">Add Goal</button>
+      </div>
+      <div id="goalList"></div>
+    </div>
+  </div>
+</div>
+
+  <script>
+    const affirmations = [
+      "You are worthy of change.",
+      "Consistency beats motivation.",
+      "Small efforts today become big wins tomorrow.",
+      "You are rebuilding. Keep going.",
+      "Your future self is watching — and grateful.",
+      "Discipline is choosing what you want most over what you want now.",
+      "You don’t have to be perfect. Just consistent."
+    ];
+
+    function updateAffirmation() {
+      const box = document.getElementById("affirmationBox");
+      const quote = affirmations[Math.floor(Math.random() * affirmations.length)];
+      box.innerText = "🌞 " + quote;
+    }
+
+    setInterval(updateAffirmation, 60000);
+    updateAffirmation();
+  </script>
+</body>
+</html>
